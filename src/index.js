@@ -53,7 +53,7 @@ const handleContinueClick = (event) => {
 
   localStorage.setItem('storedChoices', JSON.stringify(studyChoices));
 
-  window.location.href = `./instructions.html`;
+  window.location.href = `./webcam.html`;
 };
 
 button.addEventListener('click', handleContinueClick);

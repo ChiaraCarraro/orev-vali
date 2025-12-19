@@ -38,11 +38,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const responseLog = {
     // get ID out of URL parameter
     meta: {
-      subjID: studyChoices?.subjID || 'testID',
+      subjID: studyChoices?.ID || 'testID',
       order: window.location.pathname.split('/').pop().replace('.html', ''),
       touchscreen: checkForTouchscreen(),
       webcam: studyChoices?.webcam === 'true' || false,
-      saving: studyChoices?.saving || 'download',
     },
     data: [],
   };
@@ -165,48 +164,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // end of trials
     if (trialNr === trialDivs.length) {
-      // for download
-      if (responseLog.meta.saving === 'download') {
-        downloadData(responseLog.data, responseLog.meta.subjID);
+      try {
+        await downloadData(responseLog.data, responseLog.meta.subjID);
         // save the video locally
-        if (!responseLog.meta.iOSSafari && responseLog.meta.webcam) {
-          mrec.stopRecorder();
-
-          // give some time to create Video Blob
-
-          const day = new Date().toISOString().substring(0, 10);
-          const time = new Date()
-            .toISOString()
-            .slice(11, 19)
-            .replaceAll(':', '-');
-
-          await pause(2000);
-          mrec.downloadVideo(`orev-${responseLog.meta.subjID}-${day}-${time}`);
-          await pause(2000);
-        }
-        window.location.href = `./goodbye.html`;
         // for upload
-      } else if (responseLog.meta.saving === 'upload') {
-        uploadData(responseLog.data, responseLog.meta.subjID);
+      } catch (e) {
+        console.warn("Failed to download", e);
+      }
+      try {
+        await uploadData(responseLog.data, responseLog.meta.subjID);
         // give some time to create Video Blob
-        if (!responseLog.meta.iOSSafari && responseLog.meta.webcam) {
-          mrec.stopRecorder();
-
-          // show upload spinner
-          mrec.modalContent(
-            '<img src=\'/orev-vn/images/spinner-upload-de.svg\' style="width: 75vw">',
-            '#E1B4B4',
-          );
-
-          const day = new Date().toISOString().substring(0, 10);
-          const time = new Date()
-            .toISOString()
-            .slice(11, 19)
-            .replaceAll(':', '-');
-
-          await pause(2000);
-          // Wrap the upload in a Promise so that we can await it.
-          mrec.uploadVideo(
+      } catch (e) {
+        console.warn("Failed to upload:", e);
+      }
+      if (!responseLog.meta.iOSSafari && responseLog.meta.webcam) {
+        mrec.stopRecorder();
+        // give some time to create Video Blob
+        const day = new Date().toISOString().substring(0, 10);
+        const time = new Date()
+          .toISOString()
+          .slice(11, 19)
+          .replaceAll(':', '-');
+        await pause(2000);
+        await pause(2000);
+        try {
+          await mrec.downloadVideo(`orev-${responseLog.meta.subjID}-${day}-${time}`);
+        } catch (e) {
+          console.warn("Failed to download video:", e);
+        }
+        try {          // Wrap the upload in a Promise so that we can await it.
+          await mrec.uploadVideo(
             {
               fname: `orev-${responseLog.meta.subjID}-${day}-${time}`,
               uploadContent:
@@ -218,13 +205,11 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             './data/upload_video.php',
           );
-
-          await pause(20000);
+        } catch (e) {
+          console.warn("Failed to upload video:", e);
         }
-        await pause(2000);
-        studyChoices.subjID = responseLog.meta.subjID;
-        window.location.href = `https://devpsy.web.leuphana.de/orev-consent/goodbye.html?subjID=${responseLog.meta.subjID}`;
       }
+      window.location.href = `https://devpsy.web.leuphana.de/orev-vali-consent/goodbye.html`;
     }
 
     // hide last Trial, show background (empty pictures) instead
