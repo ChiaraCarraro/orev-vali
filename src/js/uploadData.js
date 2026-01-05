@@ -19,6 +19,8 @@ export function uploadData(safe, ID) {
     'correct',
     'timestamp',
     'responseTime',
+    'browser',
+    'OS',
   ];
 
   const columnNames = [
@@ -32,6 +34,8 @@ export function uploadData(safe, ID) {
     'correct',
     'timestamp',
     'responsetime_ms',
+    'browser',
+    'OS',
   ];
 
   const refinedData = [];
@@ -59,7 +63,7 @@ export function uploadData(safe, ID) {
   formData.append(
     'csvFile',
     new Blob([csvContent], { type: 'text/csv' }),
-    `orev-${ID}-${day}-${time}.csv`,
+    `orev-vali-${ID}-${day}-${time}.csv`,
   );
 
   // Send the data to the server
