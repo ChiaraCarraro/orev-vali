@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // end of trials
-    if (trialNr === 3) {
+    if (trialNr === trialDivs.length) {
       studyChoices.ID = responseLog.meta.subjID;
       // Show fullscreen overlay (spinner
       const overlay = document.querySelector("#uploadOverlay");
