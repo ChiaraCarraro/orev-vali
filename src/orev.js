@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // end of trials
-    if (trialNr === 2) {
+    if (trialNr === trialDivs.length) {
       studyChoices.ID = responseLog.meta.subjID;
       // Show fullscreen overlay (spinner
       const overlay = document.querySelector("#uploadOverlay");
@@ -182,7 +182,6 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error("Error during uploading processing:", err);
       } 
       try {
-        debugger;
         if (responseLog.meta.webcam === "true") {
           // !responseLog.meta.iOSSafari && 
           await uploadVideo(responseLog.meta.webcam, responseLog.meta.subjID);
