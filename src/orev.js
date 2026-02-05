@@ -3,6 +3,7 @@ import * as DetectRTC from 'detectrtc';
 
 import { downloadData } from './js/downloadData.js';
 import { uploadData } from './js/uploadData.js';
+import { uploadVideo } from './js/uploadVideo.js';
 import { pause } from './js/pause.js';
 // import { hideURLparams } from './js/hideURLparams.js';
 import { openFullscreen } from './js/openFullscreen.js';
@@ -163,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // end of trials
-    if (trialNr === trialDivs.length) {
+    if (trialNr === 2) {
       studyChoices.ID = responseLog.meta.subjID;
       // Show fullscreen overlay (spinner
       const overlay = document.querySelector("#uploadOverlay");
@@ -181,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error("Error during uploading processing:", err);
       } 
       try {
+        debugger;
         if (responseLog.meta.webcam === "true") {
           // !responseLog.meta.iOSSafari && 
           await uploadVideo(responseLog.meta.webcam, responseLog.meta.subjID);
