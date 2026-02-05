@@ -125,6 +125,8 @@ document.addEventListener('DOMContentLoaded', function () {
         : allAudios[trialNr - 1].src.split('/').pop().startsWith('V_')
         ? 'verb'
         : 'unknown',
+      browser: DetectRTC.browser.name,
+      OS: DetectRTC.osName,
     };
 
     button.addEventListener('click', handleContinueClick, {
